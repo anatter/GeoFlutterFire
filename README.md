@@ -2,13 +2,7 @@
 
 [![version][version-badge]][package]
 [![MIT License][license-badge]][license]
-<a href="https://github.com/Solido/awesome-flutter">
-   <img alt="Awesome Flutter" src="https://img.shields.io/badge/Awesome-Flutter-blue.svg?longCache=true&style=flat-square" />
-</a>
 [![PRs Welcome][prs-badge]](http://makeapullrequest.com)
-
-[![Watch on GitHub][github-watch-badge]][github-watch]
-[![Star on GitHub][github-star-badge]][github-star]
 
 GeoFlutterFire is an open-source library that allows you to store and query a set of keys based on their geographic location. At its heart, GeoFlutterFire simply stores locations with string keys. Its main benefit, however, is the possibility of retrieving only those keys within a given geographic area - all in realtime.
 
@@ -201,7 +195,7 @@ As the radius increases to a large number, the neighbouring hash precisions fetc
 ### Make Dynamic Queries the RxDart Way
 
 ```dart
-var radius = BehaviorSubject(seedValue: 1.0);
+var radius = BehaviorSubject<double>.seeded(1.0);
 var collectionReference = _firestore.collection('locations');
 
 stream = radius.switchMap((rad) {
@@ -213,6 +207,11 @@ stream = radius.switchMap((rad) {
 // Now update your query
 radius.add(25);
 ```
+
+### Limitations
+
+- range queries on multiple fields is not suppoerted by cloud_firestore at the moment, since this library already uses range query on `geohash` field, you cannot perform range queries with `GeoFireCollectionRef`.
+- `limit()` and `orderBy()` are not supported at the moment. `limit()` could be used to limit docs inside each hash individually which would result in running limit on all 9 hashes inside the specified radius. `orderBy()` is first run on   `geohashes` in the library, hence appending `orderBy()` with another feild wouldn't produce expected results. Alternatively documents can be sorted on client side.
 
 [version-badge]: https://img.shields.io/pub/vpre/geoflutterfire.svg
 [package]: https://pub.dartlang.org/packages/geoflutterfire
